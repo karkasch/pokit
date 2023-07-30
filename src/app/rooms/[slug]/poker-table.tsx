@@ -1,6 +1,10 @@
 'use client';
 
-export default function PokerTable({slug: string}) {
+// interface Props {
+//   slug: string;
+// }
+
+export default function PokerTable() {
 
   const cards = [0, 0.5, 1, 2, 3, 5, 8, 13, 21];
 

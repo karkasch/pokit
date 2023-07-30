@@ -1,6 +1,7 @@
 import AppCache from '@/lib/app-cache';
 import { CreateRoomRequest, Room, RoomResponse, RoomState } from '@/lib/rooms/dto';
 import { nanoid } from 'nanoid';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
@@ -10,7 +11,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const body: CreateRoomRequest = await req.json();
 
-  console.log('Create room:', body);
+  console.log('Create room: ', body);
 
   const room: Room = {
     slug: nanoid(),
@@ -20,6 +21,8 @@ export async function POST(req: NextRequest) {
   };
 
   AppCache.set('room_' + room.slug, room);
+
+  cookies().set('ppk_user', body.userName);
 
   return NextResponse.json<RoomResponse>({
     slug: room.slug,

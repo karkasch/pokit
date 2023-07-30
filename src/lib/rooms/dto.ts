@@ -7,6 +7,7 @@ export interface Room {
   name: string;
   createdDate: Date;
   state: RoomState;
+  // userName: string;
 }
 
 export interface CreateRoomRequest {
