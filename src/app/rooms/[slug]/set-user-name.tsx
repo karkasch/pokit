@@ -10,17 +10,23 @@ interface Props {
 
 
 export default function SetUserName({ userName }: Props) {
-  const [name, setUserName] = useState(userName);
+  const [name, setUserName] = useState('');
 
   const onUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     
     setUserName(event.target.value);
   }
 
-  if (name) {
+  const saveUserName = () => {
+    document.cookie = `ppk_user=${name};path=/`;
+    // userName = name;
+    window.location.reload();
+  }
+
+  if (userName) {
     return (
       <div>
-        User: {name}
+        User: {userName}
       </div>
     )
   }
@@ -29,7 +35,7 @@ export default function SetUserName({ userName }: Props) {
     <div>
 
       Your name: <input type="text" id="name" value={name} onChange={onUserNameChange} />
-      <button>Save</button>
+      <button onClick={saveUserName}>Save</button>
     </div>
   );
 }
