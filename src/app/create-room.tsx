@@ -1,4 +1,5 @@
 'use client'
+import { Paths } from '@/lib/paths';
 import { CreateRoomRequest, RoomResponse } from '@/lib/rooms/dto';
 import { useRouter } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
@@ -24,7 +25,7 @@ const CreateRoom = () => {
   }
 
   const submitForm = async () => {
-    const response = await fetch('/api/rooms', {
+    const response = await fetch(Paths.rooms.index, {
       method: 'POST',
       body: JSON.stringify(form)
     });

@@ -5,34 +5,34 @@ import { cookies } from 'next/headers';
 import SetUserName from './set-user-name';
 import { useState } from 'react';
 import PokerRoom from './poker-room';
+import { nanoid } from 'nanoid';
+import { Keys } from '@/app/api/keys';
+import { getRoom, setRoom } from '@/lib/rooms/room-provider';
 
 export default function Page({ params }: { params: { slug: string } }) {
-  let room = AppCache.get<Room>('room_' + params.slug);
-
-  const userName = cookies().get('ppk_user')?.value || '';
-
-
-  // const [userName, setUserName] = useState(cookies().get('ppk_user')?.value || null);
-
-  // const userName = cookies().get('ppk_user')?.value || null;
-
+  let userId = cookies().get(Keys.userCookie)?.value || '';
+  let room = getRoom(params.slug);
 
   if (!room) {
     room = {
       name: 'Test room name',
       slug: 'rrrr',
       createdDate: new Date(),
-      state: RoomState.Voting
+      state: RoomState.Voting,
+      users: [],
+    }
+
+    if (userId) {
+      room.users.push({ id: userId, name: 'Fake name' });
     }
   }
 
-  console.log('RO<<', room);
 
   // if (userName === null) {
   //   return (
   //     <SetUserName onSetUserName={(name: string) => setUserName(name) } />
   //   )
-  // }
+  // }  toertjenko 
 
   if (!room) {
     return (
@@ -41,14 +41,21 @@ export default function Page({ params }: { params: { slug: string } }) {
       </div>
     )
   }
+
+
+  let userName = '';
+  if (!userId) {
+    userId = nanoid(); // 'dedw';
+
+    room?.users.push({ id: userId, name: '' });
+    setRoom(room);
+  } else {
+    userName = room.users.find(user => user.id === userId)?.name || '';
+  }
   
   return (
     <div>
       <PokerRoom room={room} userName={userName} />
-      {/* <h2>{room.name}</h2>
-      <h3>User: {userName}</h3>
-      ROOM: {room.name}
-      <PokerTable slug={room.slug} /> */}
     </div>
   )
 }

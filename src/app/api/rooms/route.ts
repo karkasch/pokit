@@ -1,8 +1,10 @@
 import AppCache from '@/lib/app-cache';
 import { CreateRoomRequest, Room, RoomResponse, RoomState } from '@/lib/rooms/dto';
+import { setRoom } from '@/lib/rooms/room-provider';
 import { nanoid } from 'nanoid';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server'
+import { Keys } from '../keys';
 
 export async function GET(req: NextRequest) {
   return NextResponse.json({ a: 123}, { status: 200 });
@@ -13,18 +15,36 @@ export async function POST(req: NextRequest) {
 
   console.log('Create room: ', body);
 
+  let setCookie = false;
+  let userId = cookies().get(Keys.userCookie)?.value || '';
+  if (!userId) {
+    setCookie = true;
+    userId = nanoid();
+    cookies().set(Keys.userCookie, userId);
+  }
+
   const room: Room = {
     slug: nanoid(),
     name: body.roomName,
     createdDate: new Date(),
-    state: RoomState.Voting
+    state: RoomState.Voting,
+    users: [{ id: userId, name: body.userName }],
   };
 
-  AppCache.set('room_' + room.slug, room);
+  setRoom(room);
 
-  cookies().set('ppk_user', body.userName);
-
-  return NextResponse.json<RoomResponse>({
+  const response = NextResponse.json<RoomResponse>({
     slug: room.slug,
   }, { status: 200 });
+
+  if (setCookie) {
+    response.cookies.set({
+      name: Keys.userCookie,
+      value: userId,
+      httpOnly: true,
+      maxAge: 60 * 10
+    });
+  }
+
+  return response;
 };

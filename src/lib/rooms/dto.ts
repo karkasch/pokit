@@ -8,6 +8,12 @@ export interface Room {
   createdDate: Date;
   state: RoomState;
   // userName: string;
+  users: RoomUser[];
+}
+
+export interface RoomUser {
+  id: string;
+  name: string;
 }
 
 export interface CreateRoomRequest {
@@ -20,4 +26,8 @@ export enum RoomState {
   Undefined,
   Voting,
   Voted
+}
+
+export interface SetUserNameResponse {
+
 }

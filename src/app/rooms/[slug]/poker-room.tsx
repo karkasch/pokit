@@ -13,14 +13,11 @@ interface Props {
 
 export default function PokerRoom({ room, userName }: Props) {
 
-  // const [userName, setUserName] = useState(cookies().get('ppk_user')?.value || null);
-  
-
   return (
     <div>
       <h2>{room.slug}</h2>
 
-      <SetUserName userName={userName} />
+      <SetUserName roomId={room.slug} userName={userName} />
       ROOM 
       <PokerTable />
     </div>

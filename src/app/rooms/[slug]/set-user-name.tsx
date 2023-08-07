@@ -1,26 +1,35 @@
 'use client';
 
-import { cookies } from "next/headers";
-import { ChangeEvent, useState } from "react";
+import { setUserName } from '@/lib/api';
+import { cookies } from 'next/headers';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 interface Props {
   // onSetUserName: (name: string) => void;
+  roomId: string;
   userName: string;
 }
 
 
-export default function SetUserName({ userName }: Props) {
-  const [name, setUserName] = useState('');
+export default function SetUserName({ roomId, userName }: Props) {
+  const [name, setName] = useState('');
+  const [newName, setNewName ] = useState('');
+
+  useEffect(() => {
+    setUserName(roomId, newName).then(response => {
+      console.log('setUserName', response);
+      userName = newName;
+    });
+  }, [newName]);
 
   const onUserNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     
-    setUserName(event.target.value);
+    setName(event.target.value);
   }
 
   const saveUserName = () => {
-    document.cookie = `ppk_user=${name};path=/`;
-    // userName = name;
-    window.location.reload();
+    setNewName(name);
+    // window.location.reload();
   }
 
   if (userName) {
