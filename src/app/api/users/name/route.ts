@@ -17,7 +17,8 @@ export async function POST(req: NextRequest) {
   // TODO: validate request
 
   let setCookie = false;
-  let userId = cookies().get(Keys.userCookie)?.value || '';
+  // let userId = cookies().get(Keys.userCookie)?.value || '';
+  let userId = req.cookies.get(Keys.userCookie)?.value || '';
   console.log('Create user name userId', userId);
   if (!userId) {
     setCookie = true;
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
 
   const room = getRoom(body.roomId);
 
-  console.log('Room', room);
+  console.log('Room <', room);
 
   if (!room) {
     return NextResponse.json({}, { status: 400 });
